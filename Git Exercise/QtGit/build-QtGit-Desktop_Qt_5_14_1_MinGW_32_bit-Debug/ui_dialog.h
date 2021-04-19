@@ -14,6 +14,7 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QTextEdit>
 
 QT_BEGIN_NAMESPACE
 
@@ -21,6 +22,7 @@ class Ui_Dialog
 {
 public:
     QPushButton *pushButton;
+    QTextEdit *textEdit;
     QLabel *label;
 
     void setupUi(QDialog *Dialog)
@@ -31,6 +33,9 @@ public:
         pushButton = new QPushButton(Dialog);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
         pushButton->setGeometry(QRect(70, 160, 75, 23));
+        textEdit = new QTextEdit(Dialog);
+        textEdit->setObjectName(QString::fromUtf8("textEdit"));
+        textEdit->setGeometry(QRect(170, 140, 104, 71));
         label = new QLabel(Dialog);
         label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(380, 160, 47, 13));
