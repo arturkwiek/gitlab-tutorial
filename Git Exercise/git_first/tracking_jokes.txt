@@ -1,0 +1,136 @@
+
+Youtube - overment
+1. Utworzyæ katalog tracking_jokes
+git status
+git log
+git shortlog
+git reflog
+
+2. Zainicjowaæ repozytorium (git init)
+git status
+git log
+git shortlog
+git reflog
+
+3. Utworzyæ plik jokes.txt
+git status
+git log
+git shortlog
+git reflog
+
+4. Dodaæ plik na stage (git add .)
+git status
+git log
+git shortlog
+git reflog
+
+5. Wykonaæ commit (git commit -m "treœæ") "add base file"/" add file" (whatever)
+git status
+git log
+git shortlog
+git reflog
+
+6. Wyszukaæ w sieci dowolny dowcip i wpisaæ go do pliku.
+git status
+git log
+git shortlog
+git reflog
+
+7. Pkt. 4
+
+8. Pkt. 5
+
+9. Wykonaæ kroki 6 do 8 piêciokrotnie
+
+10 utworzyæ ga³¹Ÿ Johny i prze³¹czyæ siê na ni¹
+git status
+git log
+git shortlog
+git reflog
+...........	
+git branch 
+
+11. Wykonæ krok 9 3-krotnie dodaj¹c do pliku txt dowcipy o Jasiu.
+
+11. Prze³¹czyæ siê na ga³¹Ÿ master (git checkout master lub git checkout -)
+git status
+git log
+git shortlog
+git reflog
+...........	
+git branch 
+
+12. Sprawdziæ zawartoœæ pliku txt
+13. Po³¹czyæ zmiany z ga³êzi Johny z ga³êzi¹ master (git merge)
+git status
+git log
+git shortlog
+git reflog
+...........	
+git branch 
+
+14. Sprawdziæ zawartoœæ pliku txt
+15. Usun¹æ ga³¹Ÿ Johny ( git branch)
+git status
+git log
+git shortlog
+git reflog
+...........	
+git branch 
+
+16. Utworzyæ ga³¹Ÿ feature_j feature_b
+17. Prze³¹czyæ siê na ga³¹Ÿ feature_j
+18. Zgodnie z 11. dodaæ 3 zmiany typu j
+git status
+git log
+git shortlog
+git reflog
+
+19. Prze³¹czyæ siê na ga³¹Ÿ feature_b
+20. Zgodnie z 11. dodaæ 3 zmiany typu b
+git status
+git log
+git shortlog
+git reflog
+
+21. Prze³¹czyæ siê na ga³¹Ÿ master
+git status
+git log
+git shortlog
+git reflog
+22. Sprawdziæ zawartoœæ pliku
+
+21. Prze³¹czyæ siê na ga³¹Ÿ feature_j
+22. Sprawdziæ zawartoœæ pliku
+git status
+git log
+git shortlog
+git reflog
+
+21. Prze³¹czyæ siê na ga³¹Ÿ feature_b
+22. Sprawdziæ zawartoœæ pliku
+git status
+git log
+git shortlog
+git reflog
+
+21. Prze³¹czyæ siê na ga³¹Ÿ master
+Po³¹czyæ ga³¹Ÿ master z ga³êzi¹ feature_j
+git status
+git log
+git shortlog
+git reflog
+
+22. Po³¹czyæ ga³¹Ÿ master z ga³êzi¹ feature_b
+23. .......
+24. Wykonaæ commit
+git add
+git commit
+git status
+git log
+git shortlog
+git reflog
+
+adam
+root
+Zmt!P$lab2021#
