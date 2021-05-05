@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pl"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Deviniti - blog</title>
+    <meta name="google-site-verification" content="Xc4nkWJgOeIr4asH05tdIAntfunCRgYp9nH3Wsyaj8w">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="&lt;p&gt;Pierwszy Commit Już w samym opisie commita możemy umieścić numer zgłoszenia, który będzie z nim powiązany. Tworzymy w ten sposób połączenie pomiędzy dwoma etapami procesu tworzenia oprogramowania: zgłoszeniem samym w sobie oraz commitem z przypisanym zgłoszeniem. Jeśli zgłoszenie i kod znajdują się w tym samym projekcie, możesz po prostu dodać #xxx do opisu commita, zastępując […]&lt;/p&gt;
+">
+
+    <!--  Essential META Tags -->
+
+    <meta property="og:title" content="GitLab w rozwoju oprogramowania – część 2: Code Review">
+    <meta property="og:description" content="&lt;p&gt;Pierwszy Commit Już w samym opisie commita możemy umieścić numer zgłoszenia, który będzie z nim powiązany. Tworzymy w ten sposób połączenie pomiędzy dwoma etapami procesu tworzenia oprogramowania: zgłoszeniem samym w sobie oraz commitem z przypisanym zgłoszeniem. Jeśli zgłoszenie i kod znajdują się w tym samym projekcie, możesz po prostu dodać #xxx do opisu commita, zastępując […]&lt;/p&gt;
+">
+
+    
+    <meta property="og:image" content="https://blog.deviniti.com/wp-content/uploads/2017/09/gitlab_w_rozwoju_2-min-200x200.png">
+    <meta property="og:url" content="https://blog.deviniti.com/pl/gitlab-pl/gitlab-rozwoju-oprogramowania-czesc-2-code-review/">
+    <meta name="twitter:card" content="summary_large_image">
+
+
+    <!--  Non-Essential, But Recommended -->
+
+    <meta property="og:site_name" content="blog.deviniti.com">
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script type="text/javascript" async="" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/analytics.js"></script><script async="" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/js"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','UA-9493859-59');</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+<meta name="theme-color" content="#317EFB">
+
+
+        <!-- Primary Meta Tags -->
+        <title>GitLab w rozwoju oprogramowania – część 2: Code Review&gt;</title>
+        <meta name="title" content="">
+        <meta name="description" content="">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="">
+        <meta property="og:title" content="">
+        <meta property="og:description" content="">
+        <meta property="og:image" content="">
+
+        <!-- Twitter -->
+        <!-- <meta property="twitter:card" content="summary_large_image"> -->
+        <meta property="twitter:url" content="">
+        <meta property="twitter:title" content="">
+        <meta property="twitter:description" content="">
+        <meta property="twitter:image" content="">
+
+    <meta name="deviniti-color" content="#FF4B1F">
+    <link rel="canonical" href="https://blog.deviniti.com/pl">
+    <link rel="apple-touch-icon" href="https://deviniti.com/_res/meta/favicon.png">
+    <link rel="stylesheet" type="text/css" href="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/swiper-bundle.css">
+    <link rel="stylesheet" type="text/css" href="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/main.css">
+    <script async="" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/swiper-bundle.js"></script>
+    <script async="" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/sharect.htm"></script>
+    <script async="" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/app.js"></script>
+<style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+</style></head>
+<body><header>
+    <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="https://blog.deviniti.com/">
+            <script data-pagespeed-no-defer="">//<![CDATA[
+(function(){for(var g="function"==typeof Object.defineProperties?Object.defineProperty:function(b,c,a){if(a.get||a.set)throw new TypeError("ES3 does not support getters and setters.");b!=Array.prototype&&b!=Object.prototype&&(b[c]=a.value)},h="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global&&null!=global?global:this,k=["String","prototype","repeat"],l=0;l<k.length-1;l++){var m=k[l];m in h||(h[m]={});h=h[m]}var n=k[k.length-1],p=h[n],q=p?p:function(b){var c;if(null==this)throw new TypeError("The 'this' value for String.prototype.repeat must not be null or undefined");c=this+"";if(0>b||1342177279<b)throw new RangeError("Invalid count value");b|=0;for(var a="";b;)if(b&1&&(a+=c),b>>>=1)c+=c;return a};q!=p&&null!=q&&g(h,n,{configurable:!0,writable:!0,value:q});var t=this;function u(b,c){var a=b.split("."),d=t;a[0]in d||!d.execScript||d.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)a.length||void 0===c?d[e]?d=d[e]:d=d[e]={}:d[e]=c};function v(b){var c=b.length;if(0<c){for(var a=Array(c),d=0;d<c;d++)a[d]=b[d];return a}return[]};function w(b){var c=window;if(c.addEventListener)c.addEventListener("load",b,!1);else if(c.attachEvent)c.attachEvent("onload",b);else{var a=c.onload;c.onload=function(){b.call(this);a&&a.call(this)}}};var x;function y(b,c,a,d,e){this.h=b;this.j=c;this.l=a;this.f=e;this.g={height:window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight,width:window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth};this.i=d;this.b={};this.a=[];this.c={}}function z(b,c){var a,d,e=c.getAttribute("data-pagespeed-url-hash");if(a=e&&!(e in b.c))if(0>=c.offsetWidth&&0>=c.offsetHeight)a=!1;else{d=c.getBoundingClientRect();var f=document.body;a=d.top+("pageYOffset"in window?window.pageYOffset:(document.documentElement||f.parentNode||f).scrollTop);d=d.left+("pageXOffset"in window?window.pageXOffset:(document.documentElement||f.parentNode||f).scrollLeft);f=a.toString()+","+d;b.b.hasOwnProperty(f)?a=!1:(b.b[f]=!0,a=a<=b.g.height&&d<=b.g.width)}a&&(b.a.push(e),b.c[e]=!0)}y.prototype.checkImageForCriticality=function(b){b.getBoundingClientRect&&z(this,b)};u("pagespeed.CriticalImages.checkImageForCriticality",function(b){x.checkImageForCriticality(b)});u("pagespeed.CriticalImages.checkCriticalImages",function(){A(x)});function A(b){b.b={};for(var c=["IMG","INPUT"],a=[],d=0;d<c.length;++d)a=a.concat(v(document.getElementsByTagName(c[d])));if(a.length&&a[0].getBoundingClientRect){for(d=0;c=a[d];++d)z(b,c);a="oh="+b.l;b.f&&(a+="&n="+b.f);if(c=!!b.a.length)for(a+="&ci="+encodeURIComponent(b.a[0]),d=1;d<b.a.length;++d){var e=","+encodeURIComponent(b.a[d]);131072>=a.length+e.length&&(a+=e)}b.i&&(e="&rd="+encodeURIComponent(JSON.stringify(B())),131072>=a.length+e.length&&(a+=e),c=!0);C=a;if(c){d=b.h;b=b.j;var f;if(window.XMLHttpRequest)f=new XMLHttpRequest;else if(window.ActiveXObject)try{f=new ActiveXObject("Msxml2.XMLHTTP")}catch(r){try{f=new ActiveXObject("Microsoft.XMLHTTP")}catch(D){}}f&&(f.open("POST",d+(-1==d.indexOf("?")?"?":"&")+"url="+encodeURIComponent(b)),f.setRequestHeader("Content-Type","application/x-www-form-urlencoded"),f.send(a))}}}function B(){var b={},c;c=document.getElementsByTagName("IMG");if(!c.length)return{};var a=c[0];if(!("naturalWidth"in a&&"naturalHeight"in a))return{};for(var d=0;a=c[d];++d){var e=a.getAttribute("data-pagespeed-url-hash");e&&(!(e in b)&&0<a.width&&0<a.height&&0<a.naturalWidth&&0<a.naturalHeight||e in b&&a.width>=b[e].o&&a.height>=b[e].m)&&(b[e]={rw:a.width,rh:a.height,ow:a.naturalWidth,oh:a.naturalHeight})}return b}var C="";u("pagespeed.CriticalImages.getBeaconData",function(){return C});u("pagespeed.CriticalImages.Run",function(b,c,a,d,e,f){var r=new y(b,c,a,e,f);x=r;d&&w(function(){window.setTimeout(function(){A(r)},0)})});})();pagespeed.CriticalImages.Run('/mod_pagespeed_beacon','https://blog.deviniti.com/pl/gitlab-pl/gitlab-rozwoju-oprogramowania-czesc-2-code-review/','8Xxa2XQLv9',true,false,'V2bZXUfnfdg');
+//]]></script><img class="img-fluid" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/blog-logo.svg" alt="" data-pagespeed-url-hash="2909464768" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav d-flex justify-content-start justify-content-md-end w-100">
+                <li id="menu-item-22807" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-22807 nav-item"><a href="https://deviniti.com/solutions/pl">Rozwiązania</a>
+<ul class="sub-menu">
+	<li id="menu-item-22833" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22833 nav-item"><a href="https://deviniti.com/solutions/pl#Firmy">Firmy</a></li>
+	<li id="menu-item-22834" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22834 nav-item"><a href="https://deviniti.com/solutions/pl#Zespo%C5%82y">Zespoły</a></li>
+	<li id="menu-item-22835" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22835 nav-item"><a href="https://deviniti.com/solutions/pl#Procesy">Procesy</a></li>
+	<li id="menu-item-22836" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22836 nav-item"><a href="https://deviniti.com/solutions/tms/en">Test Managment Solution</a></li>
+	<li id="menu-item-22837" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22837 nav-item"><a href="https://deviniti.com/solutions/mcm/pl">Mobile Car Management</a></li>
+	<li id="menu-item-22838" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22838 nav-item"><a href="https://deviniti.com/solutions/cfm/pl">Car Fleet Management</a></li>
+	<li id="menu-item-22839" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22839 nav-item"><a href="https://deviniti.com/solutions/itsm/pl">ITSM</a></li>
+	<li id="menu-item-22840" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22840 nav-item"><a href="https://deviniti.com/solutions/legal/pl">Branża prawna</a></li>
+	<li id="menu-item-22841" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22841 nav-item"><a href="https://deviniti.com/solutions/finance/pl">Finanse</a></li>
+</ul>
+</li>
+<li id="menu-item-22842" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-22842 nav-item"><a href="https://deviniti.com/services/pl">Usługi</a>
+<ul class="sub-menu">
+	<li id="menu-item-22843" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22843 nav-item"><a href="https://deviniti.com/services/custom-development/pl">Custom Development</a></li>
+	<li id="menu-item-22844" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22844 nav-item"><a href="https://deviniti.com/services/mobile-development/pl">Aplikacje Mobilne</a></li>
+	<li id="menu-item-22845" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22845 nav-item"><a href="https://deviniti.com/services/ecommerce/pl">E-commerce &amp; Retail</a></li>
+	<li id="menu-item-22846" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22846 nav-item"><a href="https://deviniti.com/services/atlassian/pl">Atlassian Services</a></li>
+	<li id="menu-item-22847" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22847 nav-item"><a href="https://deviniti.com/cloud-services/pl">Cloud Services</a></li>
+	<li id="menu-item-22848" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22848 nav-item"><a href="https://deviniti.com/services/pl#Konsulting">Konsulting</a></li>
+	<li id="menu-item-22849" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22849 nav-item"><a href="https://deviniti.com/services/pl#Implementacja">Implementacja</a></li>
+	<li id="menu-item-22850" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22850 nav-item"><a href="https://deviniti.com/services/pl#Utrzymanie-oprogramowania">Utrzymanie</a></li>
+	<li id="menu-item-22851" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22851 nav-item"><a href="https://deviniti.com/services/atlassian/licence/pl">Licencje Atlassian</a></li>
+</ul>
+</li>
+<li id="menu-item-22852" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-22852 nav-item"><a href="https://deviniti.com/products/pl">Produkty</a>
+<ul class="sub-menu">
+	<li id="menu-item-22853" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22853 nav-item"><a href="https://deviniti.com/products/pl#Atlassian">Narzędzia Atlassian</a></li>
+	<li id="menu-item-22854" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22854 nav-item"><a href="https://deviniti.com/products/atlassian/pl">Aplikacje w Marketplace</a></li>
+	<li id="menu-item-22855" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22855 nav-item"><a href="https://deviniti.com/products/pl#Narz%C4%99dzia-do-zarz%C4%85dzania-prac%C4%85">Narzędzia do zarządzania pracą</a></li>
+	<li id="menu-item-22856" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22856 nav-item"><a href="https://deviniti.com/products/pl#Narz%C4%99dzia-DevOps">Narzędzia DevOps</a></li>
+	<li id="menu-item-22857" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22857 nav-item"><a href="https://deviniti.com/products/pl#Produkty-Deviniti">Produkty Deviniti</a></li>
+</ul>
+</li>
+<li id="menu-item-22858" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-22858 nav-item"><a href="https://deviniti.com/about-us/pl">Firma</a>
+<ul class="sub-menu">
+	<li id="menu-item-22859" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22859 nav-item"><a href="https://deviniti.com/about-us/pl">O nas</a></li>
+	<li id="menu-item-22860" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22860 nav-item"><a href="https://blog.deviniti.com/">Blog</a></li>
+	<li id="menu-item-22861" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22861 nav-item"><a href="https://deviniti.com/about-us/pl#contact">Kontakt</a></li>
+	<li id="menu-item-22862" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22862 nav-item"><a href="https://deviniti.com/career/pl">Kariera</a></li>
+	<li id="menu-item-22863" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22863 nav-item"><a href="https://deviniti.com/atlassian/partners/pl">Partnerzy</a></li>
+	<li id="menu-item-22864" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22864 nav-item"><a href="https://deviniti.com/support/">Wsparcie</a></li>
+	<li id="menu-item-22865" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22865 nav-item"><a href="https://deviniti.clickmeeting.com/">Webinary</a></li>
+	<li id="menu-item-22866" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22866 nav-item"><a href="https://deviniti.com/events/jira-day">Jira Day</a></li>
+	<li id="menu-item-22867" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22867 nav-item"><a href="https://deviniti.com/events/atlassian-day-baltic-edition">Atlassian Day</a></li>
+</ul>
+</li>
+<li id="menu-item-22868" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22868 nav-item"><a href="https://deviniti.com/get-an-estimate/pl">Zapytaj o wycenę</a></li>
+            </ul>
+        </div>
+        <div class="search-and-language d-flex justify-content-end justify-content-md-between">
+            <div class="widget sidebar_widget widget_search">
+    <img class="show-search-form search-icon col" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/search.png" alt="" data-pagespeed-url-hash="1077250835" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+
+    <form class="search-form input-group" action="/" method="get" style="display: none;">
+        <input class="search-input form-control widget_input" type="text" name="s" id="search" placeholder="Szukaj">
+        <button type="submit"><img class="search-icon" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/search.png" alt="" data-pagespeed-url-hash="1077250835" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></button>
+        <img class="close-icon" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/close.png" alt="" data-pagespeed-url-hash="3506604347" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+    </form>
+</div>            <ul class="language-switcher">
+                	<li class="lang-item lang-item-5 lang-item-en no-translation lang-item-first"><a hreflang="en-US" href="https://blog.deviniti.com/" lang="en-US">en</a></li>
+	<li class="lang-item lang-item-2 lang-item-pl current-lang"><a hreflang="pl-PL" href="https://blog.deviniti.com/pl/gitlab-pl/gitlab-rozwoju-oprogramowania-czesc-2-code-review/" lang="pl-PL">pl</a></li>
+            </ul>
+        </div>
+    </div>
+</nav></header><!--<div id="offert-information" class="--><!--">-->
+<!--    <div class="row">-->
+<!--        <div class="col">-->
+<!--            <div id="offert-information-close" class="close d-flex justify-content-end">-->
+<!--                &#10006;-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <p class="title">--><!--</p>-->
+<!--    <p>--><!--</p>-->
+<!--</div>-->
+            <div class="container">
+                <div class="content__box">
+                    <a class="breadcrumb breadcrumb--home" href="https://blog.deviniti.com/pl/category/gitlab-pl/">
+                        <img src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/breadcrumb-arrow.svg" class="breadcrumb--arrow" alt="" data-pagespeed-url-hash="542011545" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                        <span class="breadcrumb--span">GitLab</span>
+                    </a>
+                </div>
+            </div>
+                <section id="single-post" class="single-post">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-xs-12 col-md-10">
+                        <h1 class="single-post__title">GitLab w rozwoju oprogramowania – część 2: Code Review</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-8">
+                        <img class="single-post__thumbnail img-responsive" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/gitlab_w_rozwoju_2-min-1024x576.png" alt="" data-pagespeed-url-hash="2022788184" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                    </div>
+                    <div class="col-md-4 d-none d-md-block">
+                        <div id="list-top-header">
+                            <div class="single-post__list__element single-post__list__element__category">
+                                <a href="https://blog.deviniti.com/pl/category/gitlab-pl/" rel="category tag">GitLab</a>                            </div>
+                            <p class="latest-post__big__date">
+                                                                21 maja 2019 • 13 min czytania                            </p>
+                            <div class="row single-post-author__content__name__wrapper">
+                                <div class="single-post-author__image__small" style="background-image:url(https://blog.deviniti.com/wp-content/uploads/2021/01/deviniti-astronaut-150x150.png)"></div>
+                                <p class="col single-post-author__content__name__small">Armin Orlik</p>
+                            </div>
+                        </div>
+                        <div id="list-of-headers" style="position: relative; top: 0px; width: 349.983px;">
+                            <ul id="list-of-header-article"><li id="single-list-start" class="heading-element-scrool active"><a href="#single-post">Wstęp</a></li><li id="single-list-element-0" class="heading-element-scrool"><a href="#list0">Pierwszy Commit</a></li><li id="single-list-element-1" class="heading-element-scrool"><a href="#list1">Merge Request</a></li><li id="single-list-element-2" class="heading-element-scrool"><a href="#list2">WIP MR</a></li><li id="single-list-element-3" class="heading-element-scrool"><a href="#list3">Przegląd</a></li><li id="single-list-element-4" class="heading-element-scrool"><a href="#list4">Buduj, testuj, wdrażaj</a></li><li id="single-list-element-5" class="heading-element-scrool"><a href="#list5">Integracja Koding</a></li><li id="single-list-element-6" class="heading-element-scrool"><a href="#list6">Przykłady użycia</a></li><li id="single-list-element-7" class="heading-element-scrool"><a href="#list7">Feedback: Analiza Cykli</a></li></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-xs-12 col-md-8 single-post-content">
+                        <h2 id="0"><span style="font-weight: 400;">Pierwszy Commit</span></h2>
+<p><span style="font-weight: 400;">Już w samym opisie commita możemy 
+umieścić numer zgłoszenia, który będzie z nim powiązany. Tworzymy w ten 
+sposób połączenie pomiędzy dwoma etapami procesu tworzenia 
+oprogramowania: zgłoszeniem samym w sobie oraz commitem z przypisanym 
+zgłoszeniem. </span></p>
+<p><span style="font-weight: 400;">Jeśli zgłoszenie i kod znajdują się w tym samym projekcie, możesz po prostu dodać </span><span style="font-weight: 400;">#xxx</span> <span style="font-weight: 400;">do opisu commita, zastępując </span><span style="font-weight: 400;">xxx </span><span style="font-weight: 400;">numerem zgłoszenia. W innym przypadku możesz dodać do zgłoszenia cały URL (</span><span style="font-weight: 400;">https://gitlab.com/&lt;nazwa_uzytkownika&gt;/&lt;projekt&gt;/zgloszenia/&lt;xxx&gt;</span><span style="font-weight: 400;">).</span></p>
+<p><span style="font-weight: 400;"><img loading="lazy" class="alignnone wp-image-7628 size-full" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/9-2.png" alt="" srcset="https://blog.deviniti.com/wp-content/uploads/2017/09/9-2.png 1140w, https://blog.deviniti.com/wp-content/uploads/2017/09/9-2-300x53.png 300w, https://blog.deviniti.com/wp-content/uploads/2017/09/9-2-768x135.png 768w, https://blog.deviniti.com/wp-content/uploads/2017/09/9-2-1024x180.png 1024w" sizes="(max-width: 1140px) 100vw, 1140px" data-pagespeed-url-hash="621304072" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" width="1140" height="200"></span></p>
+<p><span style="font-weight: 400;">Gitlab.com oczywiście należy zastąpić URL-em Twojej instancji GitLab.</span></p>
+<p><b><i>Mała uwaga: </i></b><i><span style="font-weight: 400;">Połączenie pierwszego commita ze zgłoszeniem znacznie poprawi Twoje możliwości śledzenia procesu przy pomocy narzędzia </span></i><a href="https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#feedback"><i><span style="font-weight: 400;">GitLab Cycle Analytics</span></i></a><i><span style="font-weight: 400;">. Narzędzie to zmierzy czas spędzony na planowaniu wdrożenia, czyli czas pomiędzy powstaniem zgłoszenia a pierwszym commitem.</span></i></p>
+<h2 id="1"><span style="font-weight: 400;">Merge Request</span></h2>
+<p><span style="font-weight: 400;">Kiedy prześlemy dane do funkcjonalnego brancha, GitLab rozpozna zmiany i poprosi o stworzenie Merge Request’a (MR). K</span><span style="font-weight: 400;">ażdy MR ma tytuł (podsumowujący wdrożenie) i opis wspierany przez </span><a href="https://docs.gitlab.com/ee/user/markdown.html"><span style="font-weight: 400;">Markdown</span></a><span style="font-weight: 400;">.
+ W opisie możemy zwięźle przedstawić jakie zmiany wnosi dany MR, a także
+ wspomnieć o powiązanych zgłoszeniach i MR-ach (tworząc między nimi 
+połączenie). </span></p>
+<p><span style="font-weight: 400;">Jeśli commit lub MR rozwiązuje problem zgłoszenia, możemy stworzyć </span><a href="https://docs.gitlab.com/ce/administration/issue_closing_pattern.html"><span style="font-weight: 400;">wzory zamknięcia zgłoszeń</span></a><span style="font-weight: 400;">.
+ Zastosowanie opisanego rozwiązania pozwoli na automatyzację tego 
+procesu w sytuacji, gdy wspomniany commit lub MR łączy się z domyślnym 
+branchem w projekcie. </span></p>
+<p><strong>Rozważmy poniższy przykład:</strong></p>
+<p><img loading="lazy" class="alignnone wp-image-7629 size-full" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/8-2.png" alt="" srcset="https://blog.deviniti.com/wp-content/uploads/2017/09/8-2.png 1140w, https://blog.deviniti.com/wp-content/uploads/2017/09/8-2-300x78.png 300w, https://blog.deviniti.com/wp-content/uploads/2017/09/8-2-768x199.png 768w, https://blog.deviniti.com/wp-content/uploads/2017/09/8-2-1024x266.png 1024w" sizes="(max-width: 1140px) 100vw, 1140px" data-pagespeed-url-hash="1884667183" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" width="1140" height="296"></p>
+<p><span style="font-weight: 400;">MR o takim opisie wykona następujące operacje:</span></p>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">po wykonaniu merge’a, zamknie zgłoszenia </span><span style="font-weight: 400;">#xxx</span><span style="font-weight: 400;"> oraz </span><span style="font-weight: 400;">https://gitlab.com/</span><span style="font-weight: 400;">&lt;uzytkownik&gt;</span><span style="font-weight: 400;">/</span><span style="font-weight: 400;">&lt;projekt&gt;</span><span style="font-weight: 400;">/zgloszenia/</span><span style="font-weight: 400;">&lt;xxx&gt;,</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">wyświetli obrazek,</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">wyśle mailem powiadomienie użytkownikom </span><span style="font-weight: 400;">@Maria</span><span style="font-weight: 400;">, </span><span style="font-weight: 400;">@Janina</span><span style="font-weight: 400;">, i </span><span style="font-weight: 400;">@Janusz.</span></li>
+</ul>
+<p><span style="font-weight: 400;">Możemy przypisać MR do siebie, dopóki
+ nie zakończymy pracy, a następnie przypisać osobę, która napisze 
+recenzję. Możemy również wielokrotnie przypisywać MR-a do różnych osób, 
+na przykład gdy potrzebujemy kilku recenzji.</span></p>
+<p><span style="font-weight: 400;">MR-y można także oznaczać i dodawać do </span><a href="https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#milestones"><span style="font-weight: 400;">milestone’ów</span></a><span style="font-weight: 400;">, aby łatwiej było je organizować i nadawać priorytety.</span></p>
+<p><span style="font-weight: 400;">Gdy dodamy lub edytujemy plik, a 
+następnie wykonamy commit na nowego brancha z interfejsu zamiast z 
+wiersza poleceń, nadal mamy możliwość stworzenia nowego merge request’a.
+ Wystarczy zaznaczyć pole </span><b>start a new merge request with these changes</b><span style="font-weight: 400;">, by GitLab automatycznie stworzył nowego MR-a po wykonaniu commita.</span></p>
+<p><img loading="lazy" class="alignnone wp-image-7630 size-full" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/1-1.png" alt="" srcset="https://blog.deviniti.com/wp-content/uploads/2017/09/1-1.png 1393w, https://blog.deviniti.com/wp-content/uploads/2017/09/1-1-300x60.png 300w, https://blog.deviniti.com/wp-content/uploads/2017/09/1-1-768x154.png 768w, https://blog.deviniti.com/wp-content/uploads/2017/09/1-1-1024x206.png 1024w" sizes="(max-width: 1393px) 100vw, 1393px" data-pagespeed-url-hash="1843774447" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" width="1393" height="280"></p>
+<p><b><i>Mała uwaga:</i></b><i><span style="font-weight: 400;"> Musimy pamiętać o dodaniu </span></i><a href="https://docs.gitlab.com/ce/administration/issue_closing_pattern.html"><i><span style="font-weight: 400;">wzoru zamknięcia zgłoszeń</span></i></a><i><span style="font-weight: 400;"> do naszego MR-a, aby mieć możliwość śledzenia procesu przy pomocy narzędzia </span></i><a href="https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#feedback"><i><span style="font-weight: 400;">GitLab Cycle Analytics</span></i></a><i><span style="font-weight: 400;">.
+ Bada ono etap “kodowania”, czyli czas pomiędzy push’em w pierwszym 
+commicie a merge request’em, który jest związany z tym commitem.</span></i></p>
+<p><b>Nowością </b><span style="font-weight: 400;">jest obecnie rozwijane narzędzie </span><a href="https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#ability-to-stop-review-apps"><span style="font-weight: 400;">Review Apps</span></a><span style="font-weight: 400;">,
+ które pozwala umieścić aplikację w dynamicznym środowisku, dając 
+możliwość podglądu zmian na bazie nazwy brancha dla danego merge 
+requesta. Zapraszam do zapoznania się z </span><a href="https://gitlab.com/gitlab-examples/review-apps-nginx/"><span style="font-weight: 400;">przykładem wykorzystania</span></a><span style="font-weight: 400;">.</span></p>
+<h2 id="2"><span style="font-weight: 400;">WIP MR</span></h2>
+<p><span style="font-weight: 400;">WIP MR czyli </span><b>Work in Progress Merge Request </b><span style="font-weight: 400;">(wersja robocza Merge Requesta) to sposób GitLab’a na zapobieganie przedwczesnym merge’om MR-ów. Wystarczy dodać prefiks </span><span style="font-weight: 400;">WIP&nbsp;</span><span style="font-weight: 400;">przed nazwą MR-a, a nie będzie on mergowany do momentu jego usunięcia.</span></p>
+<p><span style="font-weight: 400;">Gdy Twoje zmiany są gotowe do merge’a usuń prefiks </span><span style="font-weight: 400;">WIP.</span><span style="font-weight: 400;">&nbsp;Możesz to zrobić ręcznie edytując zgłoszenie albo użyć skrótu dostępnego pod opisem MR-a.</span></p>
+<p><img loading="lazy" class="alignnone wp-image-7631 size-full" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/2-1.png" alt="" srcset="https://blog.deviniti.com/wp-content/uploads/2017/09/2-1.png 1108w, https://blog.deviniti.com/wp-content/uploads/2017/09/2-1-300x57.png 300w, https://blog.deviniti.com/wp-content/uploads/2017/09/2-1-768x145.png 768w, https://blog.deviniti.com/wp-content/uploads/2017/09/2-1-1024x193.png 1024w" sizes="(max-width: 1108px) 100vw, 1108px" data-pagespeed-url-hash="580411336" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" width="1108" height="209"></p>
+<p><span style="font-weight: 400;">Nowością jest prefiks </span><span style="font-weight: 400;">WIP,</span> <a href="https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#wip-slash-command"><span style="font-weight: 400;">który można szybko dodać do merge requesta</span></a><span style="font-weight: 400;"> przy pomocy </span><a href="https://docs.gitlab.com/ce/user/project/slash_commands.html"><span style="font-weight: 400;">komendy</span></a> <span style="font-weight: 400;">/wip</span><span style="font-weight: 400;">. Wystarczy wpisać ją w komentarzu lub w opisie MR-a.</span></p>
+<h2 id="3"><span style="font-weight: 400;">Przegląd</span></h2>
+<p><span style="font-weight: 400;">Po stworzeniu merge requesta możemy 
+zebrać feedback od członków zespołu lub współpracowników. Interfejs 
+GitLab’a wyposażony jest w opcje umożliwiające dodawanie komentarzy w 
+linii kodu, odpowiadanie oraz ich zamykanie.</span></p>
+<p><span style="font-weight: 400;">Możemy również uzyskać link do pojedynczej linii kodu klikając na jej numer.</span></p>
+<p><span style="font-weight: 400;">Historia commitów jest dostępna z poziomu interfejsu i umożliwia nam również śledzenie zmian pomiędzy wersjami danego pliku.</span></p>
+<p><span style="font-weight: 400;"><img loading="lazy" class="alignnone wp-image-7632 size-full" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/3-1.png" alt="" srcset="https://blog.deviniti.com/wp-content/uploads/2017/09/3-1.png 1125w, https://blog.deviniti.com/wp-content/uploads/2017/09/3-1-300x53.png 300w, https://blog.deviniti.com/wp-content/uploads/2017/09/3-1-768x135.png 768w, https://blog.deviniti.com/wp-content/uploads/2017/09/3-1-1024x180.png 1024w" sizes="(max-width: 1125px) 100vw, 1125px" data-pagespeed-url-hash="3612015521" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" width="1125" height="198"> </span></p>
+<p><span style="font-weight: 400;">Jeśli trafimy na jakikolwiek konflikt podczas wykonywania merge’a, możemy go </span><a href="https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#merge-conflict-resolution"><span style="font-weight: 400;">łatwo rozwiązać z poziomu interfejsu użytkownika</span></a><span style="font-weight: 400;">&nbsp;albo wyedytować plik ręcznie:</span></p>
+<h2 id="4"><span style="font-weight: 400;">Buduj, testuj, wdrażaj</span></h2>
+<p><a href="https://about.gitlab.com/gitlab-ci/"><span style="font-weight: 400;">GitLab CI</span></a><span style="font-weight: 400;"> to zaawansowany mechanizm </span><a href="https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/"><span style="font-weight: 400;">Continous Integration, Continuous Deployment oraz Continuous Delivery</span></a><span style="font-weight: 400;">, którego możemy używać do wykonywania skryptów w pożądany przez nas sposób. </span></p>
+<p><span style="font-weight: 400;">Sercem narzędzia jest plik Yaml o nazwie </span><span style="font-weight: 400;">.gitlab-ci.yml</span><span style="font-weight: 400;">,
+ znajdujący się w repozytorium projektu. Aby skorzystać z szablonów CI, 
+wystarczy dodać w interfejsie webowym nowy plik o nazwie </span><span style="font-weight: 400;">.gitlab-ci.yml</span><span style="font-weight: 400;">.
+ Uzyskamy wówczas dostęp do rozwijanej listy z wieloma szablonami o 
+różnych zastosowaniach, z której możemy wybrać najlepszy dla naszego 
+projektu.</span></p>
+<p><img loading="lazy" class="alignnone wp-image-7633 size-full" src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/5-1.png" alt="" srcset="https://blog.deviniti.com/wp-content/uploads/2017/09/5-1.png 1406w, https://blog.deviniti.com/wp-content/uploads/2017/09/5-1-300x100.png 300w, https://blog.deviniti.com/wp-content/uploads/2017/09/5-1-768x256.png 768w, https://blog.deviniti.com/wp-content/uploads/2017/09/5-1-1024x341.png 1024w" sizes="(max-width: 1406px) 100vw, 1406px" data-pagespeed-url-hash="1085289299" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" width="1406" height="468"></p>
+<h2 id="5"><span style="font-weight: 400;">Integracja Koding</span></h2>
+<p><span style="font-weight: 400;">Opcja </span><a href="https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#koding-integration"><span style="font-weight: 400;">Koding integration</span></a><span style="font-weight: 400;">,
+ pozwala uruchomić w chmurze całe środowisko produkcyjne. Takie 
+rozwiązanie daje nam możliwość wykonania check out’u lub merge 
+request’a, a cała operacja odbywa się&nbsp;w całkowicie zintegrowanym 
+środowisku.</span></p>
+<h2 id="6"><span style="font-weight: 400;">Przykłady użycia</span></h2>
+<p><span style="font-weight: 400;">Narzędzie GitLab CI możemy wykorzystać w następujący sposób:</span></p>
+<ul>
+<li style="font-weight: 400;"><a href="https://about.gitlab.com/2016/04/07/gitlab-pages-setup/"><span style="font-weight: 400;">budowa</span></a><span style="font-weight: 400;"> dowolnych </span><a href="https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/"><span style="font-weight: 400;">generatorów stron statycznych</span></a><span style="font-weight: 400;">&nbsp;oraz wdrażanie stron przy pomocy </span><a href="https://pages.gitlab.io/"><span style="font-weight: 400;">GitLab Pages,</span></a></li>
+<li style="font-weight: 400;"><a href="https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/"><span style="font-weight: 400;">wdrażanie strony</span></a><span style="font-weight: 400;"> na </span><a href="https://docs.gitlab.com/ce/ci/yaml/README.html#environment"><span style="font-weight: 400;">środowiska</span></a><span style="font-weight: 400;"> pre-produkcyjne i produkcyjne,</span></li>
+<li style="font-weight: 400;"><a href="https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/"><span style="font-weight: 400;">budowa aplikacji na system iOS,</span></a></li>
+<li style="font-weight: 400;"><a href="https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/"><span style="font-weight: 400;">budowa i wdrożenie Docker Image</span></a><span style="font-weight: 400;"> przy użyciu narzędzia </span><a href="https://about.gitlab.com/2016/05/23/gitlab-container-registry/"><span style="font-weight: 400;">GitLab Container Registry.</span></a></li>
+</ul>
+<p><span style="font-weight: 400;">Więcej przykładowych projektów GitLab CI prezentujemy </span><a href="https://docs.gitlab.com/ee/ci/examples/README.html"><span style="font-weight: 400;">w tym miejscu</span></a><span style="font-weight: 400;">.</span></p>
+<h2 id="7"><span style="font-weight: 400;">Feedback: Analiza Cykli</span></h2>
+<p><span style="font-weight: 400;">Jeśli korzystamy z GitLab Workflow, mamy możliwość zbierania informacji zwrotnej przy pomocy narzędzia </span><a href="https://about.gitlab.com/features/cycle-analytics/"><span style="font-weight: 400;">GitLab Cycle Analytics</span></a><span style="font-weight: 400;">. Mierzy ono czas jakiego potrzebował zespół na przejście od pomysłu do produkcji, uwzględniając </span><a href="https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/"><span style="font-weight: 400;">poszczególne etapy całego procesu</span></a><span style="font-weight: 400;">:</span></p>
+<ul>
+<li style="font-weight: 400;"><b>zgłoszenie:</b><span style="font-weight: 400;"> czas między powstaniem zgłoszenia a przypisaniem go do milestone’a albo do listy na tablicy zgłoszeń,</span></li>
+<li style="font-weight: 400;"><b>planowanie:</b><span style="font-weight: 400;"> czas mierzony od końca zgłoszenia do pierwszego commita,</span></li>
+<li style="font-weight: 400;"><b>kodowanie:</b><span style="font-weight: 400;"> czas od końca planowania do powstania merge requesta,</span></li>
+<li style="font-weight: 400;"><b>testy:</b><span style="font-weight: 400;"> czas wykonania całego procesu CI dla danego merge requesta,</span></li>
+<li style="font-weight: 400;"><b>przegląd:</b><span style="font-weight: 400;"> czas pomiędzy powstaniem merge requesta a mergem,</span></li>
+<li style="font-weight: 400;"><b>staging:</b><span style="font-weight: 400;"> czas pomiędzy mergem a wdrożeniem do produkcji,</span></li>
+<li style="font-weight: 400;"><b>produkcja:</b><span style="font-weight: 400;"> suma wszystkich etapów – czas pomiędzy powstaniem zgłoszenia a wdrożeniem kodu do </span><a href="https://docs.gitlab.com/ce/ci/yaml/README.html#environment"><span style="font-weight: 400;">produkcji.</span></a></li>
+</ul>
+<p><em>źródło:&nbsp;https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/</em></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="button-box col col-xs-12 col-md-8 text-center">
+                                            </div>
+                </div>
+                <div class="row">
+                    <div class="col col-xs-12 col-md-8">
+                        <div id="contact-form-box content__box">
+                            <div id="contact-form" class="contact-form">
+    <div class="row justify-content-md-start">
+        <div class="col col-xs-12 col-md-6">
+        [contact-form-7 404 "Not Found"]        </div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-xs-12 col-md-8">
+                        <div class="content__box">
+                            <div class="single-post-author row">
+    <div class="col-12 single-post-author__content">
+        <div class="row">
+            <div class="single-post-author__image" style="background-image:url(https://blog.deviniti.com/wp-content/uploads/2021/01/deviniti-astronaut-150x150.png)"></div>
+            <div class="col">
+                <p class="single-post-author__content__name">Armin Orlik</p>
+                <p class="single-post-author__content__small">
+                                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <p class="single-post-author__content__text">Inżynier i 
+konsultant w obszarach DevOps, Automation, Cloud, konteneryzacja. Bogate
+ doświadczenie we wdrażaniu i utrzymaniu praktyk DevOps. Obecnie 
+pasjonat rozwiązań chmurowych w szczególności bazując na AWS. Interesuje
+ się szeroko pojętą automatyzacją oraz projektowaniem mikroserwisów i 
+aplikacji serverless oprogramowania.</p>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-xs-12 col-md-12">
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+<!-- Modal -->
+<div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">mail wall</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="email">Zostaw maila a dostaniesz prezent:
+                    <input class="email" type="email" id="email" name="email"></label>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-save">Zapisz i pobierz</button>
+            </div>
+        </div>
+    </div>
+</div><footer class="footer">
+    <div class="container">
+        <div class="row justify-content-left">
+            <div class="col-md-6 col-lg-3 text-center footer__logo">
+                <a href="https://deviniti.com/" name="Deviniti Home" class="link nuxt-link-exact-active nuxt-link-active footer__logo__link" aria-current="page">
+                    <div>
+                        <svg width="114" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" class="footer__logo__image">
+                            <g clip-path="url(#devinitiLogo_svg__clip0)" fill="#fff">
+                                <path d="M45.732 16.973h-.054C44.542 13.68 44.245 13.08 38.956.4h-3.571l8.373 19.2h3.733L55.985.4H52.55c-1.57 3.68-5.965 13.853-6.818 16.573zM61.301.4h-3.246v19.187h3.246V.4zM73.42.4c-5.41 0-8.71 2.547-8.71 8.693V19.6h3.22V9.12c0-4.6 2.055-6.12 5.383-6.12 2.8 0 5.6 1.293 5.6 6.12V19.6h3.246V8.907C82.145 2.947 78.723.4 73.42.4zm15.421 0h-3.246v19.187h3.246V.4zm2.069 2.627h7.305V19.6h3.206V3.027h7.277V.4H90.911v2.627zM114.013.4h-3.246v19.187h3.246V.4zM25.159 0c-6.966 0-10.226 5.2-10.388 9.533.04 1.427-.203 3.147-1.082 4.56-1.137 1.84-3.179 2.934-6.128 2.934H3.246V2.973c4.707 0 5.357-.08 6.723.24 1.88.44 3.057 1.454 3.76 2.587.393-1.04.92-2.04 1.61-2.947C14.04 1.68 12.255.813 9.969.507 8.724.36 8.806.4 0 .4v19.2h8.13c5.018 0 9.089-2.973 9.914-8h17.233C36.197 5.32 31.868 0 25.159 0zm-6.912 9.013c.216-2.186 1.637-6.413 6.736-6.413 6.02 0 6.845 5.427 6.953 6.413H18.247z"></path>
+                                <path d="M24.659 17.387c-2.57-.16-4.383-1.467-5.424-3.334a11.041 11.041 0 0 1-1.705 3.014c1.705 1.733 4.14 2.826 7.129 2.92 7.615.133 9.698-5.374 9.78-5.547l-3.288-.6c-1.826 3.693-5.505 3.613-6.492 3.547z"></path>
+                            </g>
+                            <defs>
+                                <clipPath id="devinitiLogo_svg__clip0">
+                                    <path fill="#fff" d="M0 0h114v20H0z"></path>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                        <div><small class="footer__logo__link">Technology-Driven Results</small></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row footer__content__main">
+            <div class="col-6 col-md-4 col-lg-3">
+                                    <p class="footer__title">Kontakt</p>
+                    <p class="footer__content--standard">Siedziba Deviniti</p>
+                    <p class="footer__content--standard">ul. Sudecka 153</p>
+                    <p class="footer__content--standard">53-128 Wrocław</p>
+                                <br>
+                <a href="https://www.facebook.com/DevinitiPL/" target="_blank" rel="noopener noreferrer" class="footer__social facebook">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="footer__social__icon">
+                        <path d="M20.766 0H3.234A3.234 3.234 0 0 0 0 3.234v17.532A3.234 3.234 0 0 0 3.234 24h8.647l.014-8.576H9.667a.526.526 0 0 1-.525-.524l-.011-2.765a.526.526 0 0 1 .526-.527h2.224V8.937c0-3.1 1.893-4.788 4.658-4.788h2.27c.29 0 .525.235.525.525v2.331c0 .29-.235.526-.525.526h-1.393c-1.504 0-1.795.715-1.795 1.764v2.313h3.304c.315 0 .56.275.523.587l-.328 2.765a.526.526 0 0 1-.522.464h-2.962L15.62 24h5.145A3.234 3.234 0 0 0 24 20.766V3.234A3.234 3.234 0 0 0 20.766 0z" fill="#475993"></path>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/deviniti_aboutus/" target="_blank" rel="noopener noreferrer" class="footer__social instagram">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="footer__social__icon footer__social__icon--instagram">
+                        <path d="M17.377 0H6.623A6.63 6.63 0 0 0 0 6.623v10.754A6.63 6.63 0 0 0 6.623 24h10.754A6.63 6.63 0 0 0 24 17.377V6.623A6.63 6.63 0 0 0 17.377 0zm4.494 17.377a4.499 4.499 0 0 1-4.494 4.493H6.623a4.499 4.499 0 0 1-4.494-4.493V6.623A4.499 4.499 0 0 1 6.623 2.13h10.754a4.499 4.499 0 0 1 4.493 4.494v10.754z" fill="#000"></path>
+                        <path d="M12 5.816A6.191 6.191 0 0 0 5.816 12 6.191 6.191 0 0 0 12 18.184 6.191 6.191 0 0 0 18.184 12 6.191 6.191 0 0 0 12 5.816zm0 10.239A4.06 4.06 0 0 1 7.945 12 4.06 4.06 0 0 1 12 7.945 4.06 4.06 0 0 1 16.055 12 4.06 4.06 0 0 1 12 16.055zM18.443 4.01a1.569 1.569 0 0 0-1.561 1.562c0 .41.167.813.458 1.104.29.29.693.458 1.103.458.412 0 .814-.168 1.105-.458.29-.29.457-.694.457-1.104 0-.412-.166-.815-.457-1.104a1.568 1.568 0 0 0-1.105-.458z" fill="#000"></path>
+                    </svg>
+                </a>
+                <a href="https://www.linkedin.com/company/deviniti/" target="_blank" rel="noopener noreferrer" class="footer__social linkedin">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="footer__social__icon">
+                        <path d="M21.828 0H2.17A2.171 2.171 0 0 0-.001 2.171v19.658c0 1.199.972 2.17 2.171 2.17h19.658a2.17 2.17 0 0 0 2.17-2.17V2.17A2.17 2.17 0 0 0 21.829 0zM7.426 20.723a.632.632 0 0 1-.632.632h-2.69a.632.632 0 0 1-.631-.632V9.449c0-.349.283-.631.631-.631h2.69c.349 0 .632.282.632.631v11.274zM5.449 7.755a2.555 2.555 0 1 1 0-5.11 2.555 2.555 0 0 1 0 5.11zM21.48 20.774c0 .32-.26.58-.58.58h-2.887a.58.58 0 0 1-.58-.58v-5.288c0-.789.23-3.457-2.062-3.457-1.779 0-2.14 1.826-2.212 2.646v6.099c0 .32-.26.58-.58.58H9.786a.58.58 0 0 1-.58-.58V9.398c0-.32.26-.58.58-.58h2.791c.321 0 .581.26.581.58v.984c.66-.99 1.64-1.754 3.726-1.754 4.622 0 4.595 4.318 4.595 6.69v5.456z" fill="#0077B7"></path>
+                    </svg>
+                </a>
+                <a href="https://twitter.com/deviniti_voice" target="_blank" rel="noopener noreferrer" class="footer__social twitter">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="footer__social__icon">
+                        <g clip-path="url(#twitter_svg__clip0)">
+                            <path d="M23.999 4.558c-.893.392-1.844.651-2.835.777a4.893 4.893 0 0 0 2.164-2.719 9.833 9.833 0 0 1-3.12 1.191 4.919 4.919 0 0 0-8.511 3.364c0 .39.033.765.114 1.122-4.09-.199-7.71-2.16-10.141-5.146a4.954 4.954 0 0 0-.673 2.487c0 1.704.877 3.214 2.185 4.089a4.859 4.859 0 0 1-2.223-.606v.054a4.943 4.943 0 0 0 3.942 4.834c-.4.11-.837.162-1.29.162a4.35 4.35 0 0 1-.932-.084c.638 1.949 2.447 3.381 4.598 3.428a9.886 9.886 0 0 1-6.1 2.098c-.404 0-.791-.018-1.178-.067a13.852 13.852 0 0 0 7.548 2.208c9.054 0 14.004-7.5 14.004-14.001 0-.218-.008-.428-.018-.636a9.813 9.813 0 0 0 2.466-2.555z" fill="#03A9F4"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="twitter_svg__clip0">
+                                <path fill="#fff" transform="translate(-.001)" d="M0 0h24v24H0z"></path>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </a>
+                <a href="https://www.youtube.com/c/Deviniti" target="_blank" rel="noopener noreferrer" class="footer__social youtube">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="footer__social__icon--youtube">
+                        <g clip-path="url(#youtube_svg__clip0)">
+                            <path d="M23.504 6.239a3.007 3.007 0 0 0-2.115-2.116C19.511 3.61 12 3.61 12 3.61s-7.512 0-9.39.495A3.068 3.068 0 0 0 .492 6.239C0 8.117 0 12.01 0 12.01s0 3.914.494 5.773a3.008 3.008 0 0 0 2.116 2.115c1.897.514 9.39.514 9.39.514s7.512 0 9.39-.494a3.007 3.007 0 0 0 2.116-2.116c.494-1.878.494-5.772.494-5.772s.02-3.914-.495-5.792z" fill="red"></path>
+                            <path d="M9.606 15.61l6.247-3.598-6.247-3.598v7.196z" fill="#fff" class="youtube_svg__fixed youtube_svg__inside"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="youtube_svg__clip0">
+                                <path fill="#fff" transform="translate(-.001)" d="M0 0h24v24H0z"></path>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </a>
+                <p class="footer__title">Nagrody</p>
+                <div class="footer__awards">
+                    <img src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/forbes__footer.png" title="Forbes - white" alt="Forbes - white" class="v-lazy-image v-lazy-image-loaded" style="height:48px" data-pagespeed-url-hash="2573212777" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                    <img src="GitLab%20w%20rozwoju%20oprogramowania%20-%20cz%C4%99%C5%9B%C4%87%202%20-%20Code%20Review_pliki/gazele__footer.png" title="Gazele - white" alt="Gazele - white" class="v-lazy-image v-lazy-image-loaded" style="height:40px" data-pagespeed-url-hash="188834552" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3">
+                                    <p class="footer__title">Nasza Oferta</p>
+                    <a href="https://deviniti.com/custom-development/pl" class="footer__link">
+                        <p class="footer__content--link">Custom Development</p>
+                    </a>
+                    <a href="https://deviniti.com/mobile-development/pl" class="footer__link">
+                        <p class="footer__content--link">Mobile Development</p>
+                    </a>
+                    <a href="https://deviniti.com/atlassian/pl" class="footer__link">
+                        <p class="footer__content--link">Atlassian Services</p>
+                    </a>
+                    <a href="https://deviniti.com/atlassian/pl" class="footer__link">
+                        <p class="footer__content--link">Atlassian Apps</p>
+                    </a>
+                    <a href="https://deviniti.com/cloud-services/pl" class="footer__link">
+                        <p class="footer__content--link">Cloud Services</p>
+                    </a>
+                            </div>
+            <div class="col-6 col-md-4 col-lg-3">
+                                    <p class="footer__title">Firma</p>
+                    <a href="https://deviniti.com/about-us/pl" class="footer__link">
+                        <p class="footer__content--link">O nas</p>
+                    </a>
+                    <a href="https://deviniti.com/blog" class="footer__link">
+                        <p class="footer__content--link">Blog</p>
+                    </a>
+                    <a href="https://deviniti.com/about-us/pl#contact" class="footer__link">
+                        <p class="footer__content--link">Kontakt</p>
+                    </a>
+                    <a href="https://deviniti.com/career/pl" class="footer__link">
+                        <p class="footer__content--link">Kariera</p>
+                    </a>
+                    <a href="https://deviniti.com/partners/pl" class="footer__link">
+                        <p class="footer__content--link">Partnerzy</p>
+                    </a>
+                    <a href="https://deviniti.com/support" class="footer__link">
+                        <p class="footer__content--link">Wsparcie</p>
+                    </a>
+                            </div>
+            <div class="col-6 col-md-12 col-lg-3 footer__content__description">
+                <small class="footer__content--dimmed">
+                                            Cieszymy się, że dotarłeś aż
+ tutaj! To znak, że jesteś wytrwałym astronautą. Tak samo, jak my! Od 
+2004 roku misją Deviniti jest pomaganie biznesom w przejściu przez 
+cyfrową transformację. Doradzamy w zakresie najlepszych narzędzi, które 
+wystrzelą efektywność procesów biznesowych. Towarzyszymy Ci podczas 
+każdego kroku rozwoju aplikacji: od konsultacji i analizy biznesowej, 
+przez wdrożenie, po utrzymanie i wsparcie techniczne. Skontaktuj się z 
+nami i odkryj Wszechświat Transformacji Cyfrowej!
+                                    </small>
+                
+            </div>
+        </div>
+        <div class="footer__divider"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="footer__copyright">
+                                            <span>© <a href="https://deviniti.com/" target="_blank" rel="noopener noreferrer" class="footer__copyright__link">Deviniti</a> 2020</span>
+                        <span><a href="https://deviniti.com/polityka-prywatnosci/" target="_blank" rel="noopener noreferrer" class="footer__copyright__link footer__copyright__privacy">Polityka Prywatności &amp; Cookies</a></span>
+
+                                    </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+<style id="sharect-style">.sharect svg{fill:#000;}</style></body></html>
